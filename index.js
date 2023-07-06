@@ -1,6 +1,5 @@
 const config = require("./config.json");
 const colors = require("colors");
-const axios = require("axios");
 
 // Setup Discord
 const Discord = require("discord.js");
@@ -15,19 +14,43 @@ const app = express();
 
 // Setup Routes
 app.get("/log/:data", async (req, res) => {
-	console.log(req.params.data);
 	const data = JSON.parse(decodeURIComponent(req.params.data));
 	if (data.password !== config.password) return res.sendStatus(403);
-	console.log(data.sid)
-	await axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${config.steamkey}&steamids=${data.sid}`).then((response) => {
-		console.log(response.data)
-		webhook.send({
-			isUser: true,
-			username: data.name,
-			content: data.msg,
-			avatarURL: response.data.response.players[0].avatarfull
-		})
-	});
+	switch (data.type) {
+		case "prespawn": // Vehicle Spawned
+			webhook.send({
+				embeds: [{
+					title: "Vehicle Spawning",
+					color: 0xffff00,
+					description: `__**${data.server_identity}**__\n\nVID: ${data.metadata.vehicle_id}\n[${data.metadata.owner.name}](https://steamcommunity.com/profiles/${data.metadata.owner.steam_id}) is spawning \`${data.metadata.filename}\``
+				}]
+			});
+			break;
+		case "spawn": // Vehicle Spawned, send another embed with updated info
+			webhook.send({
+				embeds: [{
+					title: "Vehicle Spawned",
+					color: 0x00ff00,
+					description: `__**${data.server_identity}**__\n\nVID: ${data.metadata.vehicle_id}\n[${data.metadata.owner.name}](https://steamcommunity.com/profiles/${data.metadata.owner.steam_id}) has spawned \`${data.metadata.filename}\``,
+					fields: [
+						{
+							name: "Vehicle Stats",
+							value: `**Mass:** ${data.vehicledata.mass}\n**Voxel Count:** ${data.vehicledata.voxels}`
+						}
+					]
+				}]
+			});
+			break;
+		case "despawn": // Vehicle despawned
+			webhook.send({
+				embeds: [{
+					title: "Vehicle Despawned",
+					color: 0xff0000,
+					description: `__**${data.server_identity}**__\n\nVID: ${data.metadata.vehicle_id}\n[${data.metadata.owner.name}](https://steamcommunity.com/profiles/${data.metadata.owner.steam_id}) has despawned \`${data.metadata.filename}\``
+				}]
+			});
+			break;
+		}
 	res.sendStatus(204);
 });
 

@@ -22,7 +22,8 @@ app.get("/log/:data", async (req, res) => {
 				embeds: [{
 					title: "Vehicle Spawning",
 					color: 0xffff00,
-					description: `__**${data.server_identity}**__\n\nVID: ${data.metadata.vehicle_id}\n[${data.metadata.owner.name}](https://steamcommunity.com/profiles/${data.metadata.owner.steam_id}) is spawning \`${data.metadata.filename}\``
+					description: `__**${data.server_identity}**__\n\nVID: ${data.metadata.vehicle_id}\n[${data.metadata.owner.name}](https://steamcommunity.com/profiles/${data.metadata.owner.steam_id}) is spawning \`${data.metadata.filename}\``,
+					timestamp: new Date()
 				}]
 			});
 			break;
@@ -37,7 +38,8 @@ app.get("/log/:data", async (req, res) => {
 							name: "Vehicle Stats",
 							value: `**Mass:** ${data.vehicledata.mass}\n**Voxel Count:** ${data.vehicledata.voxels}`
 						}
-					]
+					],
+					timestamp: new Date()
 				}]
 			});
 			break;
@@ -46,7 +48,8 @@ app.get("/log/:data", async (req, res) => {
 				embeds: [{
 					title: "Vehicle Despawned",
 					color: 0xff0000,
-					description: `__**${data.server_identity}**__\n\nVID: ${data.metadata.vehicle_id}\n[${data.metadata.owner.name}](https://steamcommunity.com/profiles/${data.metadata.owner.steam_id}) has despawned \`${data.metadata.filename}\``
+					description: `__**${data.server_identity}**__\n\nVID: ${data.metadata.vehicle_id}\n[${data.metadata.owner.name}](https://steamcommunity.com/profiles/${data.metadata.owner.steam_id}) has despawned \`${data.metadata.filename}\``,
+					timestamp: new Date()
 				}]
 			});
 			break;

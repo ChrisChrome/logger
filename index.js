@@ -62,4 +62,10 @@ console.log(`${colors.cyan("[INFO]")} Starting Up...`);
 app.listen(config.port, () => {
 	console.log(`${colors.cyan("[INFO]")} Started Express Server On Port ${config.port}!`);
 	console.log(`${colors.cyan("[INFO]")} Startup Took ${new Date() - startTime}ms!`);
+	webhook.send({
+		embeds: [{
+			color: 0x00ffff,
+			description: `Logger Started`,
+		}]
+	})
 });
